@@ -39,7 +39,7 @@ export async function refreshJournalMap (map:LeafletMap) {
   currentJournals.journals.forEach((journal: Journal) => {
         if (typeof journal.candidate !== "string") {
           const popup = `${journal.candidate.firstName} ${journal.candidate.lastName}: €${journal.amount}`;
-          map.addMarker(journal.lat, journal.lng, popup);
+           map.addMarker(journal.lat, journal.lng, popup);
         }
       });
       const lastJournal = currentJournals.journals[currentJournals.journals.length -1]

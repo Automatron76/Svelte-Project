@@ -3,9 +3,10 @@
     import {  subTitle } from "$lib/runes.svelte";
     import Card from "$lib/ui/Card.svelte";
     import LeafletMap from "$lib/ui/LeafletMap.svelte";
-     import type { PageProps } from "../$types";
+    import type { PageProps } from "../$types";
     import { onMount } from "svelte";
     import { refreshJournalMap, refreshJournalState } from "$lib/services/journal-utils";
+    
     
     subTitle.text = "Journals Geo Data";
     let map: LeafletMap

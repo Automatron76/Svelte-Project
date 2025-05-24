@@ -15,6 +15,7 @@ export const load: PageServerLoad = async ({ parent }) => {
 };
 
 export const actions = {
+  
   journal: async ({ request, cookies }) => {
     const cookieStr = cookies.get("journal-user") as string;
     if (cookieStr) {
