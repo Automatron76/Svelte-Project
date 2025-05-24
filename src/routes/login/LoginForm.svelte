@@ -1,5 +1,6 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
+    import { JournalService } from "$lib/services/journal-service"
     import { loggedInUser } from "$lib/runes.svelte";
     import Message from "$lib/ui/Message.svelte";
     import UserCredentials from "$lib/ui/UserCredentials.svelte";
@@ -9,9 +10,10 @@
     let message = $state("");
   
     async function login() {
-      const success = true;
-      if (success) {
-        loggedInUser.email = email;
+      console.log(`attempting to log in email: ${email} with password: ${password}`);
+      let session = await JournalService.login(email, password);
+      
+      if (session) {
         goto("/journal");
       } else {
         email = "";
