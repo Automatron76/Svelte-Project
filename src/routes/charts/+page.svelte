@@ -1,15 +1,18 @@
 <script lang="ts">
-    import { currentCandidates, subTitle } from "$lib/runes.svelte";
-    import { onMount } from "svelte";
-    import { currentJournals, currentDataSets } from "$lib/runes.svelte";
-   import { JournalService } from "$lib/services/journal-service";
-    import type { Session } from "$lib/types/journal-types";
+  
+    import {  currentDataSets } from "$lib/runes.svelte";
+    
     
     // @ts-ignore
     import Chart from "svelte-frappe-charts";
     import Card from "$lib/ui/Card.svelte";
-
+    import type { PageProps } from "../$types";
     
+    import { refreshJournalState } from "$lib/services/journal-utils";
+
+    let { data }: PageProps = $props();
+    refreshJournalState(data.journals, data.candidates);
+
   </script>
   
   <div class="columns">

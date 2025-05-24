@@ -18,6 +18,7 @@
   
 
     onMount(async () => {
+      await import("leaflet/dist/leaflet.css")
     const leaflet = await import("leaflet");
     L = leaflet.default;
     baseLayers = {

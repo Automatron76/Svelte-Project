@@ -1,18 +1,28 @@
 <script lang="ts">
-  import { browser } from "$app/environment";
-  import { loggedInUser } from "$lib/runes.svelte";
-  import { JournalService } from "$lib/services/journal-service";
   import Heading from "$lib/ui/Heading.svelte";
   import Menu from "$lib/ui/Menu.svelte";
-  import { onMount } from "svelte";
+  import { loggedInUser } from "$lib/runes.svelte";
+  import { goto } from "$app/navigation";
+  import { browser } from "$app/environment";
   
-  onMount(async () => {
-    await JournalService.restoreSession();
-  });
+  
+  export let data: any;
+  if (data.session) {
+    loggedInUser.email = data.session.email;
+    loggedInUser.name = data.session.name;
+    loggedInUser.token = data.session.token;
+    loggedInUser._id = data.session._id;
+    if (browser) goto ("/journal");
+  } else {
+    loggedInUser.email = "";
+    loggedInUser.name = "";
+    loggedInUser.token = "";
+    loggedInUser._id = "";
+  }
 </script>
 
 <div class="container">
-  {#if loggedInUser.email}
+  {#if loggedInUser.token}
     <Menu />
     <Heading />
   {/if}

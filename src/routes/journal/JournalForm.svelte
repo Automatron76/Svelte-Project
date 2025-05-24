@@ -1,82 +1,54 @@
-<script lang="ts">
-   import type { Candidate } from "$lib/types/journal-types";
-   import { loggedInUser, currentCandidates } from "$lib/runes.svelte"; 
-   import { JournalService } from "$lib/services/journal-service";
-   import type { Journal } from "$lib/types/journal-types";
+<script lang="ts"> 
    import Coordinates from "$lib/ui/Coordinates.svelte";
- 
+   import { enhance } from "$app/forms";
     
-   let { journalEvent = null } = $props();
-  let lat = $state(52.160858);
-  let lng = $state(-7.15242);
+   let { candidateList = [], enhanceFn, message = $bindable("") } = $props();
 
-  let amount = $state(0);
-  let selectedCandidate = $state("Simpson, Lisa");
-  let transportMethods = ["bike", "walk", "bus"];
-  let selectedMethod = $state("bike");
-  let message = $state(" Add a journal entry");
-
-  async function journal() {
-    if (selectedCandidate && amount && selectedMethod) {
-      const candidate = currentCandidates.candidates.find((candidate ) => candidate._id === selectedCandidate);
-      console.log("Selected candidate:", selectedCandidate)
-      if (candidate)  {
-        const journal: Journal = {
-          amount: amount,
-          method: selectedMethod,
-          
-          candidate: selectedCandidate,
-          lat: lat,
-          lng: lng,
-          donor: loggedInUser._id
-        };
-        
-        const success = await JournalService.journal(journal, loggedInUser.token);
-        if(!success) {
-          message = "Journal not completed - some error occurred";
-          return;
-        }
-        if (journalEvent) journalEvent(journal);
-        message = `Thanks for submitting a new page of your journal. It will last ${amount} and ${candidate.firstName} ${candidate.lastName} will be there.`;
-      }
-      else {
-        message = "Please select time of visit, method and candidate";
-      }
-    }
-  }
+  let lat : number;
+  let lng : number;
+  let transportMethods = ["bike", "bus", "walk"];
+  
 
 </script>
 
 
 
-<div>
+<form method="POST" action="?/journal" use:enhance={enhanceFn}>
   <div class="field">
-    <label class="label" for="amount">Visit duration:</label>
-    <input bind:value={amount} class="input" id="amount" name="amount" type="number" />
+    <label class="label" for="amount">Enter Amount of time you will spend in minutes:</label>
+    <input class="input" id="amount" name="amount" type="number" />
   </div>
   <div class="field">
     <div class="control">
-      <label class="label" for="amount">Select transport method</label>
+      <label class="label" for="amount">Select Transport Method:</label>
       {#each transportMethods as method}
-      <input bind:group={selectedMethod} class="radio" type="radio" value={method}/> {method}
+        <input class="radio" type="radio" value={method} name="method" /> {method}
       {/each}
     </div>
   </div>
   <div class="field">
-    <label class="label" for="amount">Select Candidate:</label>
+    <label class="label" for="candidate">Select Candidate:</label>
     <div class="select">
-      <select bind:value={selectedCandidate}>
-        {#each currentCandidates.candidates as candidate}
-        <option value={candidate._id}>{candidate.lastName},{candidate.firstName}</option>
+      <select name="candidate">
+        {#each candidateList as candidate}
+          <option value={candidate._id}>{candidate.lastName},{candidate.firstName} </option>
         {/each}
-         </select>
+      </select>
     </div>
-</div>
-<label class="label"for="coordinates"> Select location </label>
-    <Coordinates bind:lat bind:lng />
+  </div>
+  <p>Lat: {lat}, lng : {lng}</p>
+  <Coordinates bind:lat bind:lng />
+  <input type="hidden" name="lat" value={lat} />
+
+  <input type="hidden" name="lng" value={lng} />
   <div class="field">
     <div class="control">
-      <button onclick={() => journal()} class="button is-success is-fullwidth">{message}</button>
+      <button class="button is-success is-fullwidth">Add Journal</button>
     </div>
+  </div>
+</form>
+<div class="box mt-4">
+  <div class="content has-text-centered">
+    {message}
   </div>
 </div>

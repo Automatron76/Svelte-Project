@@ -21,14 +21,16 @@
   </script>
   
   <div class="box">
-    {#if message}
-    <Message {message} />
-    {/if}
-    <UserDetails bind:firstName bind:lastName />
-    <UserCredentials bind:email bind:password />
-    <button onclick={() => signup()} class="button is-hovered is-fullwidth is-info">Sign Up</button>
-    <p class="has-text-centered mt-4">
-      Already have an account? <a href="/login" data-cy="login-redirect">Login Here</a>
-    </p>
+    <form method="POST" action="?/signup">
+      {#if message}
+        <Message {message} />
+      {/if}
+      <UserDetails bind:firstName bind:lastName />
+      <UserCredentials bind:email bind:password />
+      <button class="button">Sign Up</button>
+      <p class="has-text-centered">
+        Already have an account? <a href="/login" data-cy="login-redirect">Login Here</a>
+      </p>
+    </form>
   </div>
   

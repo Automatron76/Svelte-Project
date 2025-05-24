@@ -19,7 +19,7 @@ export const currentDataSets = $state({
       ]
     },
     journalsByCandidate: {
-      labels: [],
+      labels: [] as string[],
       datasets: [
         {
           values: [0, 0]

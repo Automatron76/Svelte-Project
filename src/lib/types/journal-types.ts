@@ -27,6 +27,14 @@ export interface Session {
     lat: number;
     lng: number;
   }
+  export interface JournalService {
+    signup(user: User): Promise<boolean>;
+    login(email: string, password: string): Promise<Session | null>;
+    journal(journal: Journal): Promise<Journal | false>;
+    getCandidates(): Promise<Candidate[]>;
+    getJournals(candidateId?: string): Promise<Journal[]>;
+  }
+  
   
   export interface DataSet {
     labels: string[];

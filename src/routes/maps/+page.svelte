@@ -1,18 +1,18 @@
 <script lang="ts">
     
-    import { loggedInUser, subTitle } from "$lib/runes.svelte";
-    import { JournalService } from "$lib/services/journal-service";
-    import type { Journal } from "$lib/types/journal-types";
+    import {  subTitle } from "$lib/runes.svelte";
     import Card from "$lib/ui/Card.svelte";
     import LeafletMap from "$lib/ui/LeafletMap.svelte";
-    import { popup } from "leaflet";
+     import type { PageProps } from "../$types";
     import { onMount } from "svelte";
-    import { refreshJournalMap } from "$lib/services/journal-utils";
+    import { refreshJournalMap, refreshJournalState } from "$lib/services/journal-utils";
     
     subTitle.text = "Journals Geo Data";
     let map: LeafletMap
+    let { data }: PageProps = $props();
 
     onMount(async () => {
+    await refreshJournalState(data.journals, data.candidates);
     await refreshJournalMap(map);
   });
   

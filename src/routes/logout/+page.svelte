@@ -1,8 +1,8 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
-    import { JournalService } from "$lib/services/journal-service";
-    
-    JournalService.clearSession();
-     goto("/");
+    import { browser } from "$app/environment";
+    import { clearJournalState } from "$lib/services/journal-utils";
+    clearJournalState();
+    if (browser) goto("/");
   </script>
   
