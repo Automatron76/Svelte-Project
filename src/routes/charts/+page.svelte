@@ -12,6 +12,8 @@
 
     let { data }: PageProps = $props();
     refreshJournalState(data.journals, data.candidates);
+    console.log(data.journals)
+    console.log(currentDataSets.journalsByMethod)
 
   </script>
   
@@ -22,7 +24,7 @@
     </Card>
   </div>
   <div class="column has-text-centered">
-    <Card title="Visit duration By Candidate">
+    <Card title="Visit duration by companion">
       <Chart data={currentDataSets.journalsByCandidate} type="pie" />
     </Card>
   </div>

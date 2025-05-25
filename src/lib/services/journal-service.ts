@@ -4,14 +4,38 @@ import type { Candidate, Journal } from "$lib/types/journal-types";
 import { userStore } from "$lib/models/mongo/user-store";
 import { journalStore } from "$lib/models/mongo/journal-store";
 import { candidateStore } from "$lib/models/mongo/candidate-store";
+ 
+import validator from "validator";
 
 
 export const journalService: JournalService = {
   // baseUrl: "http://localhost:4000",
 
   async signup(user: User): Promise<boolean> {
+
+    const sanitizedUser = {
+      ...user,
+      email: validator.normalizeEmail(user.email) || "",
+      firstName: validator.escape(user.firstName),
+      lastname: validator.escape(user.lastName),
+      password: validator.escape(user.password)
+    }
+    console.log("Sanitized user object:", sanitizedUser)
+   if (!sanitizedUser.email) {
+    console.log("email emtpy:")
+   } 
+   
+
+    if( sanitizedUser.email || !validator.isEmail(sanitizedUser.email) || sanitizedUser.password.length <4) { return false}
+    console.log("invalid email format")
     try {
-      const newUser = await userStore.add(user);
+      const existingUser = await userStore.findBy(sanitizedUser.email)
+      console.log("check if user exists with:", sanitizedUser.email)
+      if(existingUser) {
+        console.log("user seems to exist already:", existingUser.email)
+        return false
+      }
+      const newUser = await userStore.add(sanitizedUser);
       return !!newUser
     } catch (error) {
       console.log(error);
@@ -21,8 +45,15 @@ export const journalService: JournalService = {
 
   async login(email: string, password: string): Promise<Session | null> {
     try {
-      const user = await  userStore.findBy(email);
-      if ( user !== null && user.password ===password) {
+      const sanitizedEmail = validator.normalizeEmail(email);
+      const sanitizedPassword = validator.escape(password);
+
+      if ( !sanitizedEmail || !validator.isEmail(sanitizedEmail))return null 
+      if (sanitizedPassword.length <0) return null
+
+      const user = await  userStore.findBy(sanitizedEmail);
+      if (user !== null && user.password === sanitizedPassword)
+      {
          
         const session= {
             name: `${user.firstName} ${user.lastName}`,
@@ -30,8 +61,7 @@ export const journalService: JournalService = {
             _id: user._id!.toString(),
             email: user.email
         };
-     //   this.saveSession(session, email);
-     //   await this.refreshJournalInfo();
+    
         return session;
       }
       return null;
@@ -41,40 +71,23 @@ export const journalService: JournalService = {
     }
   },
 
- // saveSession(session: Session, email: string) {
- //   loggedInUser.email = email;
-  //  loggedInUser.name = session.name;
-  //  loggedInUser.token = session.token;
-  //  loggedInUser._id = session._id;
-  //  localStorage.journal = JSON.stringify(loggedInUser);
-//  },
-
- // async restoreSession() {
- //   const savedLoggedInUser = localStorage.journal;
- //   if (savedLoggedInUser) {
- //     const session = JSON.parse(savedLoggedInUser);
- //     loggedInUser.email = session.email;
- //     loggedInUser.name = session.name;
- //     loggedInUser.token = session.token;
- //     loggedInUser._id = session._id;
- //   }
-    
- // },
-
- // clearSession() {
- //   currentJournals.journals = [];
- //   currentCandidates.candidates = [];
- //   loggedInUser.email = "";
- //   loggedInUser.name = "";
- //   loggedInUser.token = "";
- //   loggedInUser._id = "";
- //   localStorage.removeItem("journal");
- // },
 
 
   async journal(journal: Journal) {
+
+    const sanitizedJournal = {
+      ...journal,
+      method: validator.escape(journal.method),
+      amount: Math.max(0,Number(journal.amount)),
+      lat: Number(journal.lat),
+      lng: Number(journal.lng) 
+    }
+
+    if ( !sanitizedJournal.method || isNaN(sanitizedJournal.amount) || isNaN(sanitizedJournal.lat) || isNaN(sanitizedJournal.lng)) { return false}
+
+
     try {
-      const newJournal = await journalStore.add(journal);
+      const newJournal = await journalStore.add(sanitizedJournal);
       return JSON.parse(JSON.stringify(newJournal));
        
     } catch (error) {
@@ -104,8 +117,7 @@ export const journalService: JournalService = {
     } 
     }catch (error) {
       console.log(error)
-        return [];
-}
+        return [];}
+    }
 
-}
 }

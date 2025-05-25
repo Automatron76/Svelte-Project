@@ -1,7 +1,10 @@
 <script lang="ts">
-    import "leaflet/dist/leaflet.css";
+    
     import { onMount } from "svelte";
-    import { latLng, type Control, type Map as LeafletMap } from "leaflet";
+    import {  type Control, type Map as LeafletMap } from "leaflet";
+    import { browser } from '$app/environment';
+
+
 
     let { height = 80 } = $props();
     let id = "home-map-id";
@@ -18,8 +21,12 @@
   
 
     onMount(async () => {
-      await import("leaflet/dist/leaflet.css")
+
+     // import "leaflet/dist/leaflet.css";
+      if(!browser) return;
+     await import("leaflet/dist/leaflet.css")
     const leaflet = await import("leaflet");
+    
     L = leaflet.default;
     baseLayers = {
       Terrain: leaflet.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {

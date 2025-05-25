@@ -16,11 +16,16 @@ export const load: PageServerLoad = async ({ parent }) => {
 
 export const actions = {
   
-  journal: async ({ request, cookies }) => {
+  journal: async ({ request, cookies }: RequestEvent) => {
     const cookieStr = cookies.get("journal-user") as string;
-    if (cookieStr) {
+    if (!cookieStr) {
+        return { success: false, error: "No user session found"}}
+
       const session = JSON.parse(cookieStr) as Session;
-      if (session) {
+      if (!session) {
+        return { success: false, error: "Invalid session"}}
+
+
         const form = await request.formData();
         const journal = {
           amount: form.get("amount") as unknown as number,
@@ -31,7 +36,8 @@ export const actions = {
           donor: session._id
         };try {
         const newJournal = await journalService.journal(journal);
-        return newJournal;}
+        return newJournal;
+      }
         catch(error) {
             return {
                 success: false,
@@ -40,5 +46,3 @@ export const actions = {
         }
       }
     }
-  }
-};

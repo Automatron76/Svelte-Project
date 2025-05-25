@@ -14,7 +14,7 @@ export const currentDataSets = $state({
       labels: ["bike", "walk", "bus"],
       datasets: [
         {
-          values: [0, 0]
+          values: [0, 0, 0]
         }
       ]
     },
@@ -22,7 +22,7 @@ export const currentDataSets = $state({
       labels: [] as string[],
       datasets: [
         {
-          values: [0, 0]
+          values: [0, 0, 0]
         }
       ]
     }

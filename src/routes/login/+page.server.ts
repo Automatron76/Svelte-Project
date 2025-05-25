@@ -2,6 +2,8 @@ import { redirect } from "@sveltejs/kit";
 import { dev } from "$app/environment"; 
 import { journalService } from "$lib/services/journal-service.js";
 import bcrypt from "bcrypt";
+import { userStore } from "$lib/models/mongo/user-store.js";
+
 
 export const actions = {
   login: async ({ request, cookies }) => {
@@ -11,14 +13,22 @@ export const actions = {
     const plainPassword = form.get("password") as string;
 
     const password = form.get("password") as string;
-    if (email === "" || !plainPassword) {
-    throw redirect(307, "/")
+        if (!email || !plainPassword) {
+        throw redirect(307, "/")}
+
+        const user = await userStore.findBy(email);
+        if(!user) {
+          console.log("User not found"); throw redirect (307, "/")
+        }
+
 
     const validPassword = await bcrypt.compare(plainPassword, user.password);
-    if (!validPassword) { console.log("invalid password")}
-    } else {
-      console.log(`attempting to log in email: ${email} with password: ${password}`);
-      const session = await journalService.login(email, password);
+    if (!validPassword) { console.log("invalid password")
+      throw redirect(307, "/")
+    }
+
+    const session = await journalService.login(email,user.password);
+    
 
       if (session) {
         const userJson = JSON.stringify(session);
@@ -35,4 +45,4 @@ export const actions = {
       }
     }
   }
-};
+;

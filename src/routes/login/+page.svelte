@@ -1,8 +1,9 @@
 <script lang="ts">
   import LoginForm from "./LoginForm.svelte";
+  import SimpleMenu from "$lib/ui/SimpleMenu.svelte";
 </script>
   
-
+<SimpleMenu />
 <section class="hero is-fullheight">
   <div class="hero-body">
     <div class="container">

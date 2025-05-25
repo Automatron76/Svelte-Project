@@ -11,7 +11,8 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
 		"format": "prettier --write .",
-		"lint": "prettier --check . && eslint ."
+		"lint": "prettier --check . && eslint .",
+		"mongo": "mongod --dbpath ./db"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.8",
@@ -21,7 +22,6 @@
 		"@sveltejs/vite-plugin-svelte": "^5.0.3",
 		"@types/chart.js": "^2.9.41",
 		"@types/leaflet": "^1.9.18",
-		"axios": "^1.9.0",
 		"eslint": "^9.25.1",
 		"eslint-config-prettier": "^10.1.2",
 		"eslint-plugin-svelte": "^3.5.1",
@@ -37,7 +37,9 @@
 		"vite": "^6.3.3"
 	},
 	"dependencies": {
+		"@auth/sveltekit": "^1.9.2",
 		"bcrypt": "^6.0.0",
-		"rollup": "^4.40.2"
+		"rollup": "^4.40.2",
+		"validator": "^13.15.0"
 	}
 }

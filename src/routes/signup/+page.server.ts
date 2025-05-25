@@ -1,6 +1,6 @@
 import { journalService } from "$lib/services/journal-service";
 import type { User } from "$lib/types/journal-types";
-import { redirect } from "@sveltejs/kit";
+import { fail, redirect } from "@sveltejs/kit";
 import bcrypt from "bcrypt";
 
 const saltRounds = 12;
@@ -21,14 +21,14 @@ export const actions = {
       password: hashedPassword
     };
     if (user.email === "" || hashedPassword === "") {
-      throw redirect(307, "/");
+      return fail(400, {message:"invalid email or password required"});
     } else {
       console.log(`attempting to sign up email: ${user.email} with password: ${user.password}`);
       const success = await journalService.signup(user);
-      if (success) {
-        throw redirect(303, "/");
+      if (!success) {
+        return fail(409, {message:"user already exists"});
       } else {
-        throw redirect(307, "/");
+        throw redirect(303, "/login") 
       }
     }
   }

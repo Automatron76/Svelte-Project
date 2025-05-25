@@ -1,5 +1,5 @@
 import { journalService } from "$lib/services/journal-service";
-import type { Session } from "$lib/types/journal-types";
+ 
 import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ parent }) => {

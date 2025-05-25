@@ -12,12 +12,13 @@
     import { refreshJournalMap, refreshJournalState } from "$lib/services/journal-utils";
     import type { PageProps } from "../$types";
     
-    
+
     subTitle.text = "Journal";
     let { data }: PageProps = $props();
     let message = $state("Enter a new journal page")
 
     const handleJournalSuccess = () => {
+      
     return async ({ result }: { result: ActionResult }) => {
       if (result.type === "success") {
         const journal = result.data as Journal;
@@ -32,7 +33,7 @@
   };
 
 
-
+    
     let map: LeafletMap;
  
 
